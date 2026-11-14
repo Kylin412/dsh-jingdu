@@ -1175,7 +1175,7 @@ window.__ModuleLoader__.load({
             if (settings.playChime) playChime();
             const token = claimPlay();
             const summary = await summarizeText(text, settings.persona, settings.useSoul, undefined);
-            if (cancelled || !isCurrent(token)) return;
+            if (!isCurrent(token)) return;
             await autoSpeak(summary, settings.voice, token);
           } catch (cause) {
             if (cancelled) return;

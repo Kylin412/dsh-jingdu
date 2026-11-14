@@ -2,7 +2,13 @@
 
 在 DeepSeek Harness 里用 DeepSeek 官方 TTS 朗读助手回复。默认静音，只有点击按钮或显式打开自动播报才会出声。
 
-当前版本：`0.4.0-beta.5`（预发布）。安装后刷新页面即可使用。
+当前版本：`0.4.0-beta.6`（预发布）。安装后刷新页面即可使用。
+
+## 0.4.0-beta.6 预发布说明
+
+- **修复自动播报“只响提示音、不出声”**：turnTail 组件卸载时不再取消正在执行的自动播报；新回复完成后会正常走总结 + 流式合成。
+- 增加 [TEST-REPORT.md](./TEST-REPORT.md)：手动朗读、流式播放、自动播报、试听、缓存、Key 灯的时间轴与消耗记录。
+- 功能与 0.4.0-beta.5 一致。
 
 ## 0.4.0-beta.5 预发布说明
 
@@ -65,7 +71,7 @@ git clone https://github.com/Kylin412/dsh-tts.git
 plugin_manager install_bundle C:\path\to\dsh-tts
 ```
 
-预发布包：`dist/dsh-deepseek-tts-0.4.0-beta.5.tgz`，校验值在 `dist/SHA256SUMS.txt`。分发时把 tgz 或整个仓库目录交给目标机器即可。
+预发布包：`dist/dsh-deepseek-tts-0.4.0-beta.6.tgz`，校验值在 `dist/SHA256SUMS.txt`。分发时把 tgz 或整个仓库目录交给目标机器即可。
 
 - 客户端 `client.js` 更新后刷新页面即可。
 - Host `index.js` / `lib/` 更新后，对 `include:dsh-deepseek-tts` 执行一次 disable/enable，或重启 DSH。

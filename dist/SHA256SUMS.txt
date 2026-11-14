@@ -1,1 +1,2 @@
 9dead0d116465c0b3b017dfa6b003d656652a224882af1b8d9d76b3d22c6769a  dsh-deepseek-tts-0.4.0-beta.5.tgz
+391d99674ee169bc1fc809e49085ca011ebb16e77fe0eb08ad5aeb03b70fe92c  dsh-deepseek-tts-0.4.0-beta.6.tgz
