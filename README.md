@@ -1,8 +1,8 @@
-# 鲸读（dsh-deepseek-tts）
+# 鲸读（dsh-jingdu）
 
 在 DeepSeek Harness 中把助手回复变成语音。**鲸读**默认静音，点按才读；也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
 
-> 当前为预发布版本 `0.4.0-beta.8`。仓库：<https://github.com/Kylin412/dsh-tts>
+> 当前版本 `0.4.0`。仓库：<https://github.com/Kylin412/dsh-jingdu>
 >
 > 测试数据见 [TEST-REPORT.md](./TEST-REPORT.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
 
@@ -22,26 +22,46 @@
 
 ### 环境要求
 
-- 已安装并可运行的 DeepSeek Harness（Web profile）。
+- 已安装并可运行的 DeepSeek Harness（Web profile，`0.2.2` 系列）。
+- Node.js 22 或更高版本。
 - 一个 DeepSeek 开放平台的 `sk-` API Key。DSH 账号登录令牌不能调用 TTS。
 - 浏览器可访问 `api.deepseek.com`，并允许 WebSocket、IndexedDB 与音频播放。
 - 运行时无需额外 npm 依赖；React 由 DSH 客户端提供。
 
 ### 安装
 
+从 npm 安装（包发布后）：
+
 ```powershell
-git clone https://github.com/Kylin412/dsh-tts.git
+dsh plugin --profile web add dsh-jingdu
 ```
 
-然后在 DSH 会话中安装这个 bundle，把路径换成克隆后的绝对路径：
+从源码安装：
+
+```powershell
+git clone https://github.com/Kylin412/dsh-jingdu.git
+dsh plugin --profile web add ./dsh-jingdu
+```
+
+也可以在已启动的 DSH 会话中安装 bundle 目录，把路径换成克隆后的绝对路径：
 
 ```text
-plugin_manager install_bundle C:\path\to\dsh-tts
+plugin_manager install_bundle C:\path\to\dsh-jingdu
 ```
 
 安装完成后刷新页面，左侧栏会出现「鲸读」。
 
-离线分发可以使用 `dist/dsh-deepseek-tts-0.4.0-beta.8.tgz`；解压后按目录安装。校验值见 `dist/SHA256SUMS.txt`。
+离线分发可以使用 `dist/dsh-jingdu-0.4.0.tgz`；校验值见 `dist/SHA256SUMS.txt`。
+
+### 从旧版升级
+
+旧版包名是 `dsh-deepseek-tts`。先移除旧 bundle，再安装 `dsh-jingdu`：
+
+```text
+plugin_manager remove_bundle dsh-deepseek-tts
+```
+
+Key、设置与缓存沿用旧内部存储键，升级后不会丢失；显示名与 bundle 标识统一为 `dsh-jingdu`。
 
 ### 第一次使用
 
@@ -92,10 +112,12 @@ plugin_manager install_bundle C:\path\to\dsh-tts
 | --- | --- | --- |
 | `/api/dsh-tts/speak` | POST | 读取 Key，调用 `https://api.deepseek.com/v1/tools/tts`，返回 `audio/wav`；作为流式失败时的回退 |
 | `/api/dsh-tts/summarize` | POST | 调用 `https://api.deepseek.com/chat/completions`（`deepseek-chat`），把长回复压成口语总结；短文本直接回原文 |
-| `/api/dsh-tts/key` | GET/POST/DELETE | 查询/保存/清除插件私有凭据 `dsh-deepseek-tts/api-key` |
+| `/api/dsh-tts/key` | GET/POST/DELETE | 查询/保存/清除插件私有凭据记录 `dsh-deepseek-tts/api-key` |
 | `/api/dsh-tts/soul` | GET/POST | 读取/保存 `soul.md`（UTF-8，上限 20 KB） |
 
 Key 解析顺序：请求头 `x-dsh-tts-key` → 请求体 `apiKey` → 插件私有凭据记录 → 环境变量 `DSH_TTS_API_KEY`。不会读取或覆盖 DSH 共享的 `DEEPSEEK_API_KEY`。
+
+凭据记录名沿用 `dsh-deepseek-tts/api-key`，这是旧版留下的内部名称，只为升级时不丢 Key；显示名与新包名均为 `dsh-jingdu`。
 
 ### Client 挂载点
 
@@ -115,7 +137,7 @@ Key 解析顺序：请求头 `x-dsh-tts-key` → 请求体 `apiKey` → 插件�
 ## 隐私与安全
 
 - 文本与音频只发送到 `api.deepseek.com`；插件没有遥测、没有第三方上传。
-- Key 保存在两处：当前浏览器 `localStorage` 与 DSH 凭据的插件私有记录 `dsh-deepseek-tts/api-key`。它不会写入 DSH 共享 Key。
+- Key 保存在两处：当前浏览器 `localStorage` 与 DSH 凭据的插件私有记录。它不会写入 DSH 共享 Key。
 - 清除 Key：设置页点「清除」，两处副本都会删除。
 - 音频与总结缓存只在本机；可在设置页清理。
 - 仓库与发布包不包含 API Key。
@@ -141,7 +163,7 @@ TTS 按计费字符收费（中文 1 字按 2 个计费字符）。一条约 60 
 - 一次只播放一条回复；开始新的朗读会停止上一条。
 - 流式播放依赖浏览器 `localStorage` 中的 Key；只有服务端 Key 时会回退到较慢的 WAV 路径。
 - 浏览器自动播放策略可能拦截自动播报；这是浏览器行为，手动点 🔊 不受影响。
-- 预发布版本，接口与文件结构仍可能调整。
+- 目前只适配 DSH Web profile；移动端浏览器未做专门适配。
 
 ## 常见问题
 
@@ -162,7 +184,7 @@ TTS 必须使用 `sk-` 开头的开放平台 API Key。DSH 账号登录令牌只
 
 **更新后界面没变化？**
 
-客户端 `client.js` 更新后刷新页面；Host `index.js` / `lib/` 更新后对 `include:dsh-deepseek-tts` 执行一次 disable/enable，或重启 DSH。
+客户端 `client.js` 更新后刷新页面；Host `index.js` / `lib/` 更新后对 `include:dsh-jingdu` 执行一次 disable/enable，或重启 DSH。
 
 **如何更换人设文件？**
 
@@ -181,13 +203,13 @@ npm pack --pack-destination dist
 安装后调试：
 
 - 客户端改动：刷新页面。
-- Host 改动：重载 `include:dsh-deepseek-tts`，或重启 DSH。
-- 卸载：`plugin_manager remove_bundle dsh-deepseek-tts`。
+- Host 改动：重载 `include:dsh-jingdu`，或重启 DSH。
+- 卸载：`plugin_manager remove_bundle dsh-jingdu`。
 
 ### 目录结构
 
 ```text
-dsh-tts/
+dsh-jingdu/
 ├─ index.js              # Host 路由注册
 ├─ lib/
 │  ├─ config.js          # 常量
@@ -199,7 +221,7 @@ dsh-tts/
 ├─ client.js             # 客户端：按钮、面板、流式、缓存
 ├─ soul.md               # 默认人设
 ├─ locale/               # 中英文元数据
-├─ dist/                 # 预发布 tgz 与校验值
+├─ dist/                 # tgz 与校验值
 ├─ TEST-REPORT.md
 ├─ CHANGELOG.md
 ├─ LICENSE

@@ -3,6 +3,8 @@ node_modules/
 .tts-*
 .check-*.mjs
 .test-*.mjs
+.publish-*.mjs
+.pack-*
 .selftest-*
 *.log
 .env

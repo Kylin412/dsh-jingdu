@@ -1,10 +1,30 @@
 {
-  "name": "dsh-deepseek-tts",
-  "version": "0.4.0-beta.8",
-  "private": true,
+  "name": "dsh-jingdu",
+  "version": "0.4.0",
   "license": "MIT",
   "type": "module",
-  "description": "Jingdu (鲸读): read DSH assistant replies aloud with DeepSeek TTS — streaming playback, summaries, soul.md persona, auto-play and a settings panel.",
+  "description": "鲸读（Jingdu）：用 DeepSeek TTS 朗读 DSH 助手回复 — 流式播放、总结、soul.md 人设、自动播报与设置面板。",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "deepseek",
+    "tts",
+    "text-to-speech",
+    "voice",
+    "jingdu"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kylin412/dsh-jingdu.git"
+  },
+  "homepage": "https://github.com/Kylin412/dsh-jingdu#readme",
+  "bugs": {
+    "url": "https://github.com/Kylin412/dsh-jingdu/issues"
+  },
+  "engines": {
+    "node": ">=22",
+    "dsh": ">=0.2.2-0 <0.3.0-0"
+  },
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -25,6 +45,7 @@
     "LICENSE"
   ],
   "dsh": {
+    "manifestVersion": 1,
     "bundle": { "patch": "./cordis.patch.yml" },
     "client": {
       "platform": "web",

@@ -1,13 +1,14 @@
 window.__ModuleLoader__.load({
-  id: 'dsh-deepseek-tts',
+  id: 'dsh-jingdu',
   factory(require) {
     const React = require('react');
     const h = React.createElement;
 
     const MAX_CHARACTERS = 4000;
+    // 存储键与缓存库沿用旧名前缀，保证从 dsh-deepseek-tts 升级时不丢 Key、设置与缓存。
     const KEY_STORAGE = 'dsh-deepseek-tts/apiKey';
     const SETTINGS_STORAGE = 'dsh-deepseek-tts/settings';
-    const PANEL_ID = 'dsh-deepseek-tts';
+    const PANEL_ID = 'dsh-jingdu';
     const VOICES = [
       { id: 'stella', label: 'stella（女声）' },
       { id: 'tide', label: 'tide（男声）' },
@@ -1179,7 +1180,7 @@ window.__ModuleLoader__.load({
             await autoSpeak(summary, settings.voice, token);
           } catch (cause) {
             if (cancelled) return;
-            console.warn('[dsh-deepseek-tts] 自动播报失败：', cause);
+            console.warn('[dsh-jingdu] 自动播报失败：', cause);
           }
         })();
 
@@ -1751,9 +1752,9 @@ window.__ModuleLoader__.load({
       inject: ['slots'],
       apply(ctx) {
         try {
-          if (document.getElementById('dsh-deepseek-tts-action-style') === null) {
+          if (document.getElementById('dsh-jingdu-action-style') === null) {
             const style = document.createElement('style');
-            style.id = 'dsh-deepseek-tts-action-style';
+            style.id = 'dsh-jingdu-action-style';
             style.textContent = ACTION_CSS;
             document.head.appendChild(style);
           }
@@ -1764,7 +1765,7 @@ window.__ModuleLoader__.load({
           ctx.slots.register(
             {
               name: 'conversation.chat.assistant-actions',
-              id: 'dsh-deepseek-tts-speak',
+              id: 'dsh-jingdu-speak',
               order: 40,
             },
             SpeakButton,
@@ -1774,7 +1775,7 @@ window.__ModuleLoader__.load({
           ctx.slots.register(
             {
               name: 'conversation.chat.turnTail',
-              id: 'dsh-deepseek-tts-autoplay',
+              id: 'dsh-jingdu-autoplay',
               order: 500,
             },
             AutoPlayTail,
@@ -1784,7 +1785,7 @@ window.__ModuleLoader__.load({
           ctx.slots.register(
             {
               name: 'settings.section',
-              id: 'dsh-deepseek-tts',
+              id: 'dsh-jingdu',
               order: 80,
               label: () => '鲸读',
             },

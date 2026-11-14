@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 (2026-11-14)
+
+首个公开版本：仓库与包名统一为 `dsh-jingdu`。
+
+- GitHub 仓库、npm 包名、bundle id、客户端模块 id 与 cordis patch id 统一为 `dsh-jingdu`；显示名保持「鲸读」。
+- `package.json` 补充 `repository` / `homepage` / `bugs` / `keywords` / `engines` 与 `dsh.manifestVersion`，移除 `private`。
+- README 更新公开安装方式（`dsh plugin --profile web add`、源码、`plugin_manager`）、旧版升级说明、MIT 许可证与打包说明。
+- 为兼容升级，内部凭据记录 `dsh-deepseek-tts/api-key`、localStorage 键、IndexedDB 缓存库与 `/api/dsh-tts/*` 路由保持不变。
+- 功能与 0.4.0-beta.8 一致。
+
 ## 0.4.0-beta.8 (2026-11-14)
 
 预发布：显示名改为「鲸读」。
