@@ -791,7 +791,7 @@ window.__ModuleLoader__.load({
       }
       const controller = new AbortController();
       const response = await requestSpeech(
-        '你好，我是 DeepSeek 语音朗读。',
+        '你好，我是鲸读，用 DeepSeek 语音为你朗读。',
         voice,
         controller.signal,
         readStoredKey(),
@@ -1542,7 +1542,7 @@ window.__ModuleLoader__.load({
         h(
           'div',
           null,
-          h('h2', { style: { margin: 0, fontSize: '19px', fontWeight: 650 } }, 'DeepSeek 朗读'),
+          h('h2', { style: { margin: 0, fontSize: '19px', fontWeight: 650 } }, '鲸读'),
         ),
         h(
           Card,
@@ -1786,7 +1786,7 @@ window.__ModuleLoader__.load({
               name: 'settings.section',
               id: 'dsh-deepseek-tts',
               order: 80,
-              label: () => 'DeepSeek 朗读',
+              label: () => '鲸读',
             },
             SettingsSection,
           ),
@@ -1800,7 +1800,7 @@ window.__ModuleLoader__.load({
               name: 'sidebar.panellist',
               id: PANEL_ID,
               order: 60,
-              label: () => 'DeepSeek 朗读',
+              label: () => '鲸读',
             },
             SpeakerIcon,
           ),

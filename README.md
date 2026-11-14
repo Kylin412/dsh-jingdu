@@ -1,8 +1,8 @@
-# DeepSeek 朗读（dsh-deepseek-tts）
+# 鲸读（dsh-deepseek-tts）
 
-在 DeepSeek Harness 中把助手回复变成语音：默认点按朗读，也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
+在 DeepSeek Harness 中把助手回复变成语音。**鲸读**默认静音，点按才读；也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
 
-> 当前为预发布版本 `0.4.0-beta.7`。仓库：<https://github.com/Kylin412/dsh-tts>
+> 当前为预发布版本 `0.4.0-beta.8`。仓库：<https://github.com/Kylin412/dsh-tts>
 >
 > 测试数据见 [TEST-REPORT.md](./TEST-REPORT.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
 
@@ -39,13 +39,13 @@ git clone https://github.com/Kylin412/dsh-tts.git
 plugin_manager install_bundle C:\path\to\dsh-tts
 ```
 
-安装完成后刷新页面，左侧栏会出现「DeepSeek 朗读」。
+安装完成后刷新页面，左侧栏会出现「鲸读」。
 
-离线分发可以使用 `dist/dsh-deepseek-tts-0.4.0-beta.7.tgz`；解压后按目录安装。校验值见 `dist/SHA256SUMS.txt`。
+离线分发可以使用 `dist/dsh-deepseek-tts-0.4.0-beta.8.tgz`；解压后按目录安装。校验值见 `dist/SHA256SUMS.txt`。
 
 ### 第一次使用
 
-1. 打开左侧栏「DeepSeek 朗读」。
+1. 打开左侧栏「鲸读」。
 2. 填入 `sk-` 开头的 API Key，点「保存」；标题旁圆点变绿表示已配置。
 3. 点「试听」确认能出声；也可以在任意助手回复下点 🔊。
 4. 如需自动播报，打开「任务完成后自动播报」。
@@ -102,7 +102,7 @@ Key 解析顺序：请求头 `x-dsh-tts-key` → 请求体 `apiKey` → 插件�
 - `conversation.chat.assistant-actions`：每条已完成回复的 🔊 按钮。
 - `conversation.chat.turnTail`：自动播报，只处理新 settled 的 turn。
 - `sidebar.panellist` + `main`：左侧栏入口与完整设置面板。
-- `settings.section`：设置弹窗中的「DeepSeek 朗读」页。
+- `settings.section`：设置弹窗中的「鲸读」页。
 
 ### 音频链路
 
