@@ -1,7 +1,8 @@
 {
   "name": "dsh-deepseek-tts",
-  "version": "0.4.0-beta.6",
+  "version": "0.4.0-beta.7",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Read DSH assistant replies aloud with DeepSeek TTS: streaming playback, summaries, soul.md persona, auto-play and a settings panel.",
   "exports": {
@@ -20,7 +21,8 @@
     "soul.md",
     "README.md",
     "CHANGELOG.md",
-    "TEST-REPORT.md"
+    "TEST-REPORT.md",
+    "LICENSE"
   ],
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },

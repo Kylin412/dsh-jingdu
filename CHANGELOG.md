@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0-beta.7 (2026-11-14)
+
+预发布：补充许可证。
+
+- 新增 MIT License 与 `LICENSE` 文件。
+- `package.json` 声明 `"license": "MIT"`，发布包包含 `LICENSE`。
+
 ## 0.4.0-beta.6 (2026-11-14)
 
 预发布：修复自动播报不出声，补充测试报告。

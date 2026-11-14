@@ -2,7 +2,7 @@
 
 在 DeepSeek Harness 中把助手回复变成语音：默认点按朗读，也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
 
-> 当前为预发布版本 `0.4.0-beta.6`。仓库：<https://github.com/Kylin412/dsh-tts>
+> 当前为预发布版本 `0.4.0-beta.7`。仓库：<https://github.com/Kylin412/dsh-tts>
 >
 > 测试数据见 [TEST-REPORT.md](./TEST-REPORT.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
 
@@ -41,7 +41,7 @@ plugin_manager install_bundle C:\path\to\dsh-tts
 
 安装完成后刷新页面，左侧栏会出现「DeepSeek 朗读」。
 
-离线分发可以使用 `dist/dsh-deepseek-tts-0.4.0-beta.6.tgz`；解压后按目录安装。校验值见 `dist/SHA256SUMS.txt`。
+离线分发可以使用 `dist/dsh-deepseek-tts-0.4.0-beta.7.tgz`；解压后按目录安装。校验值见 `dist/SHA256SUMS.txt`。
 
 ### 第一次使用
 
@@ -202,9 +202,12 @@ dsh-tts/
 ├─ dist/                 # 预发布 tgz 与校验值
 ├─ TEST-REPORT.md
 ├─ CHANGELOG.md
+├─ LICENSE
 └─ README.md
 ```
 
 ## 许可证
 
-暂未指定 License。仓库当前为私有仓库；如需分发请先确认授权。
+本项目采用 [MIT License](./LICENSE)。
+
+Copyright (c) 2026 Kylin412
