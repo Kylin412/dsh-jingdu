@@ -1086,7 +1086,7 @@ window.__ModuleLoader__.load({
       stopActive();
       const cacheId = await makeCacheKey(text, voice);
       let blob = await getCachedAudio(cacheId);
-      if (!isCurrent(token)) return;
+      if (!isCurrent(token)) return { ended: false };
       if (blob === null) {
         const stream = startStreamingSpeech(
           text.slice(0, MAX_CHARACTERS),
@@ -1107,11 +1107,11 @@ window.__ModuleLoader__.load({
             await stream.started;
             if (!isCurrent(token)) {
               stopStream();
-              return;
+              return { ended: false };
             }
             await stream.done;
             if (activeStop === stopStream) activeStop = null;
-            return;
+            return { ended: !streamStopped };
           } catch {
             stream.stop();
             if (activeStop === stopStream) activeStop = null;
@@ -1125,15 +1125,20 @@ window.__ModuleLoader__.load({
           controller.signal,
           '',
         );
-        if (!isCurrent(token)) return;
+        if (!isCurrent(token)) return { ended: false };
         if (!response.ok) throw new Error(await responseError(response));
         blob = await response.blob();
-        if (!isCurrent(token)) return;
+        if (!isCurrent(token)) return { ended: false };
         void putCachedAudio(cacheId, blob, { voice, text });
       }
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       let stopped = false;
+      let ended = false;
+      let resolveEnded;
+      const endedPromise = new Promise((resolveEndedPromise) => {
+        resolveEnded = resolveEndedPromise;
+      });
       const stop = () => {
         if (stopped) return;
         stopped = true;
@@ -1144,11 +1149,29 @@ window.__ModuleLoader__.load({
         }
         URL.revokeObjectURL(url);
         if (activeStop === stop) activeStop = null;
+        resolveEnded();
       };
       activeStop = stop;
-      audio.addEventListener('ended', stop, { once: true });
-      await audio.play();
-      if (!isCurrent(token)) stop();
+      audio.addEventListener(
+        'ended',
+        () => {
+          ended = true;
+          stop();
+        },
+        { once: true },
+      );
+      try {
+        await audio.play();
+      } catch (error) {
+        stop();
+        throw error;
+      }
+      if (!isCurrent(token)) {
+        stop();
+        return { ended: false };
+      }
+      await endedPromise;
+      return { ended };
     }
 
     function AutoPlayTail(props) {
@@ -1173,11 +1196,12 @@ window.__ModuleLoader__.load({
         let cancelled = false;
         void (async () => {
           try {
-            if (settings.playChime) playChime();
             const token = claimPlay();
             const summary = await summarizeText(text, settings.persona, settings.useSoul, undefined);
             if (!isCurrent(token)) return;
-            await autoSpeak(summary, settings.voice, token);
+            const played = await autoSpeak(summary, settings.voice, token);
+            if (!isCurrent(token)) return;
+            if (played?.ended && settings.playChime) playChime();
           } catch (cause) {
             if (cancelled) return;
             console.warn('[dsh-jingdu] 自动播报失败：', cause);
@@ -1693,7 +1717,7 @@ window.__ModuleLoader__.load({
               disabled: !settings.autoPlay,
               onChange: (value) => updateSettings({ playChime: value }),
             },
-            '播报前播放提示音',
+            '播报结束后播放提示音',
           ),
         ),
         h(

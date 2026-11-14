@@ -1,1 +1,2 @@
-57c32df9fe3f9bd8914e08a7a61b7639e850c8f1864e35f6f64dc503ccee8f5d  dsh-jingdu-0.4.0.tgz
+﻿57c32df9fe3f9bd8914e08a7a61b7639e850c8f1864e35f6f64dc503ccee8f5d  dsh-jingdu-0.4.0.tgz
+8b61d0ce71d1e13b4ff1de706d3ec9bdad768a81340f4ec9929b94fd1659b7b6  dsh-jingdu-0.4.1.tgz
