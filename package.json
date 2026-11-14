@@ -1,0 +1,32 @@
+{
+  "name": "dsh-deepseek-tts",
+  "version": "0.4.0-beta.5",
+  "private": true,
+  "type": "module",
+  "description": "Read DSH assistant replies aloud with DeepSeek TTS: streaming playback, summaries, soul.md persona, auto-play and a settings panel.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib/**/*.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "soul.md",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  }
+}

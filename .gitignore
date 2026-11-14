@@ -1,0 +1,11 @@
+node_modules/
+.edge-profile*/
+.tts-*
+.check-*.mjs
+.test-*.mjs
+.selftest-*
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
