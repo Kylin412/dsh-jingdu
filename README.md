@@ -2,7 +2,7 @@
 
 在 DeepSeek Harness 中把助手回复变成语音。**鲸读**默认静音，点按才读；也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
 
-> 当前版本 `0.4.1`。仓库：<https://github.com/Kylin412/dsh-jingdu>
+> 当前版本 `1.0.0`。仓库：<https://github.com/Kylin412/dsh-jingdu>
 >
 > 测试数据见 [TEST-REPORT.md](./TEST-REPORT.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
 
@@ -51,7 +51,7 @@ plugin_manager install_bundle C:\path\to\dsh-jingdu
 
 安装完成后刷新页面，左侧栏会出现「鲸读」。
 
-离线分发可以使用 `dist/dsh-jingdu-0.4.1.tgz`；校验值见 `dist/SHA256SUMS.txt`。
+离线分发可以使用 `dist/dsh-jingdu-1.0.0.tgz`；校验值见 `dist/SHA256SUMS.txt`。
 
 ### 从旧版升级
 

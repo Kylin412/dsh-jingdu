@@ -1,7 +1,8 @@
 # 鲸读（dsh-jingdu）测试报告
 
 - 测试时间：2026-11-14
-- 插件版本：`0.4.1`（测试时包名为 `dsh-deepseek-tts`；`0.4.0` 起统一为 `dsh-jingdu`，内部存储键与凭据记录名保持不变）
+- 插件版本：`1.0.0`（测试时包名为 `dsh-deepseek-tts`；`0.4.0` 起统一为 `dsh-jingdu`，内部存储键与凭据记录名保持不变）
+- 1.0.0 复核：`node --check` 全部 JS 通过；无头浏览器加载新客户端无 Runtime exception / console error；缓存改为 LRU 并在 429/503/504 时重试一次；完整播放时间轴沿用 0.4.1 实测数据。
 - 环境：DSH Web `http://127.0.0.1:3080`，headless Edge 157，24kHz mono PCM16
 - Key：插件私有凭据记录 `dsh-deepseek-tts/api-key`（不写 DSH 共享 Key）
 

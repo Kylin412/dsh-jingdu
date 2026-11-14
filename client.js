@@ -105,14 +105,37 @@ window.__ModuleLoader__.load({
               .transaction('audio', 'readonly')
               .objectStore('audio')
               .get(key);
-            request.onsuccess = () =>
-              resolve(request.result instanceof Blob ? request.result : null);
+            request.onsuccess = () => {
+              const blob = request.result instanceof Blob ? request.result : null;
+              if (blob !== null) touchCacheEntry(db, key);
+              resolve(blob);
+            };
             request.onerror = () => resolve(null);
           } catch {
             resolve(null);
           }
         });
       });
+    }
+
+    function touchCacheEntry(db, key) {
+      try {
+        const store = db.transaction('meta', 'readwrite').objectStore('meta');
+        const request = store.get(key);
+        request.onsuccess = () => {
+          const meta = request.result;
+          if (meta !== null && typeof meta === 'object') {
+            try {
+              store.put({ ...meta, lastUsedAt: Date.now() }, key);
+            } catch {
+              // Best-effort recency update.
+            }
+          }
+        };
+        request.onerror = () => {};
+      } catch {
+        // Best-effort recency update.
+      }
     }
 
     async function pruneCache(db) {
@@ -137,28 +160,35 @@ window.__ModuleLoader__.load({
           resolve(out);
         }
       });
-      entries.sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0));
+      entries.sort(
+        (a, b) => (a.lastUsedAt ?? a.createdAt ?? 0) - (b.lastUsedAt ?? b.createdAt ?? 0),
+      );
       let total = entries.reduce((sum, entry) => sum + (entry.size ?? 0), 0);
       let index = 0;
       while (
         index < entries.length &&
         (entries.length - index > CACHE_MAX_ENTRIES || total > CACHE_MAX_BYTES)
       ) {
-        const entry = entries[index];
+        total -= entries[index].size ?? 0;
         index += 1;
-        total -= entry.size ?? 0;
-        await new Promise((resolve) => {
-          try {
-            const tx = db.transaction(['audio', 'meta'], 'readwrite');
-            tx.objectStore('audio').delete(entry.key);
-            tx.objectStore('meta').delete(entry.key);
-            tx.oncomplete = resolve;
-            tx.onerror = resolve;
-          } catch {
-            resolve();
-          }
-        });
       }
+      if (index === 0) return;
+      await new Promise((resolve) => {
+        try {
+          const tx = db.transaction(['audio', 'meta'], 'readwrite');
+          const audioStore = tx.objectStore('audio');
+          const metaStore = tx.objectStore('meta');
+          for (const entry of entries.slice(0, index)) {
+            audioStore.delete(entry.key);
+            metaStore.delete(entry.key);
+          }
+          tx.oncomplete = resolve;
+          tx.onerror = resolve;
+          tx.onabort = resolve;
+        } catch {
+          resolve();
+        }
+      });
     }
 
     async function putCachedAudio(key, blob, info) {
@@ -171,6 +201,7 @@ window.__ModuleLoader__.load({
           tx.objectStore('meta').put(
             {
               createdAt: Date.now(),
+              lastUsedAt: Date.now(),
               size: blob.size,
               voice: info.voice,
               preview: String(info.text ?? '').slice(0, 80),
@@ -479,13 +510,18 @@ window.__ModuleLoader__.load({
         const headers = { 'content-type': 'application/json' };
         const storedKey = readStoredKey();
         if (typeof storedKey === 'string' && storedKey.length > 0) headers['x-dsh-tts-key'] = storedKey;
-        const response = await fetch('/api/dsh-tts/summarize', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ text: clean.slice(0, 12000), persona: useSoul ? persona : '', useSoul }),
-          signal,
-        });
-        if (response.ok) {
+        let response = null;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          response = await fetch('/api/dsh-tts/summarize', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ text: clean.slice(0, 12000), persona: useSoul ? persona : '', useSoul }),
+            signal,
+          });
+          if (response.status !== 429 && response.status !== 503) break;
+          if (attempt === 0) await new Promise((resolve) => window.setTimeout(resolve, 700));
+        }
+        if (response !== null && response.ok) {
           const body = await response.json();
           if (typeof body?.summary === 'string' && body.summary.trim().length > 0) {
             const summary = body.summary.trim();
@@ -505,12 +541,17 @@ window.__ModuleLoader__.load({
     async function requestSpeech(text, voice, signal, key) {
       const headers = { 'content-type': 'application/json' };
       if (typeof key === 'string' && key.length > 0) headers['x-dsh-tts-key'] = key;
-      return fetch('/api/dsh-tts/speak', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ text, voice }),
-        signal,
-      });
+      for (let attempt = 0; ; attempt += 1) {
+        const response = await fetch('/api/dsh-tts/speak', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ text, voice }),
+          signal,
+        });
+        const retryable = response.status === 429 || response.status === 503 || response.status === 504;
+        if (!retryable || attempt >= 1) return response;
+        await new Promise((resolve) => window.setTimeout(resolve, 700));
+      }
     }
 
     function wavBlobFromPcm(parts, sampleRate) {
@@ -754,30 +795,30 @@ window.__ModuleLoader__.load({
       if (stop !== null) stop();
     }
 
-    function playChime() {
+    function playEndChime() {
       try {
         const Ctor = window.AudioContext || window.webkitAudioContext;
         if (typeof Ctor !== 'function') return;
         const context = new Ctor();
         if (context.state === 'suspended') void context.resume();
         const start = context.currentTime + 0.02;
-        const notes = [660, 990];
+        const notes = [880, 660];
         notes.forEach((freq, index) => {
-          const at = start + index * 0.12;
+          const at = start + index * 0.11;
           const oscillator = context.createOscillator();
           const gain = context.createGain();
           oscillator.type = 'sine';
           oscillator.frequency.value = freq;
           gain.gain.setValueAtTime(0.0001, at);
-          gain.gain.exponentialRampToValueAtTime(0.16, at + 0.015);
-          gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.18);
+          gain.gain.exponentialRampToValueAtTime(0.12, at + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.16);
           oscillator.connect(gain).connect(context.destination);
           oscillator.start(at);
-          oscillator.stop(at + 0.2);
+          oscillator.stop(at + 0.18);
         });
         window.setTimeout(() => {
           void context.close().catch(() => {});
-        }, 700);
+        }, 650);
       } catch {
         // Sound is optional; the summary still speaks.
       }
@@ -1201,7 +1242,7 @@ window.__ModuleLoader__.load({
             if (!isCurrent(token)) return;
             const played = await autoSpeak(summary, settings.voice, token);
             if (!isCurrent(token)) return;
-            if (played?.ended && settings.playChime) playChime();
+            if (played?.ended && settings.playChime) playEndChime();
           } catch (cause) {
             if (cancelled) return;
             console.warn('[dsh-jingdu] 自动播报失败：', cause);
