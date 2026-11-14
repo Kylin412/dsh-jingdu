@@ -228,6 +228,10 @@ dsh-jingdu/
 └─ README.md
 ```
 
+## 友链
+
+- [LINUX DO](https://linux.do) —— 中文技术社区；感谢社区与佬友的监督。
+
 ## 许可证
 
 本项目采用 [MIT License](./LICENSE)。
