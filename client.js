@@ -1303,6 +1303,7 @@ window.__ModuleLoader__.load({
         'label',
         {
           style: {
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',

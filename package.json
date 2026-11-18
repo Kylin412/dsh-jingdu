@@ -1,6 +1,6 @@
 {
   "name": "dsh-jingdu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "type": "module",
   "description": "鲸读（Jingdu）：用 DeepSeek TTS 朗读 DSH 助手回复 — 流式播放、总结、soul.md 人设、自动播报与设置面板。",

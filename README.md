@@ -2,9 +2,11 @@
 
 在 DeepSeek Harness 中把助手回复变成语音。**鲸读**默认静音，点按才读；也可以打开任务完成自动播报。支持总结/全文两种模式、流式首包即播、`soul.md` 人设、`stella`/`tide` 双声线，以及本机音频与总结缓存。
 
-> 当前版本 `1.0.0`。仓库：<https://github.com/Kylin412/dsh-jingdu>
+> 当前版本 `1.0.1`。仓库：<https://github.com/Kylin412/dsh-jingdu>
 >
 > 测试数据见 [TEST-REPORT.md](./TEST-REPORT.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
+>
+> 1.0.1 修复：设置页点击自动播报/提示音开关时整页上滚、底部出现空白（issue #1）。
 
 ## 特性
 
